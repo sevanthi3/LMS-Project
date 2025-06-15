@@ -1,0 +1,20 @@
+# Ignore environment variables
+.env
+backend/.env
+client/.env
+
+# Ignore node_modules
+node_modules/
+backend/node_modules/
+client/node_modules/
+
+# Ignore build output
+dist/
+build/
+
+# Ignore log files
+*.log
+
+# Ignore system files
+.DS_Store
+Thumbs.db
