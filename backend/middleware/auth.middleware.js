@@ -1,44 +1,45 @@
-import AppError from "../utils/error.utils.js";
 import jwt from "jsonwebtoken";
-import userModel from '../models/user.model.js';
+import { User } from "../models/user.model.js";
 
-const isLoggedIn = async (req, res, next) => {
-    const { token } = req.cookies;
+// ✅ Middleware 1: Authentication
+export const isLoggedIn = async (req, res, next) => {
+  try {
+    const token = req.cookies.token;
 
     if (!token) {
-        return next(new AppError("Unauthenticated, please login again", 400))
+      return res.status(401).json({ success: false, message: "User not logged in" });
     }
 
-    const userDetails = await jwt.verify(token, process.env.JWT_SECRET);
-    req.user = userDetails;
-
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select("-password");
     next();
-}
+  } catch (error) {
+    console.error("Auth error:", error);
+    res.status(401).json({ success: false, message: "Invalid or expired token" });
+  }
+};
 
-// authorised roles
-const authorisedRoles = (...roles) => async (req, res, next) => {
-    const currentUserRoles = req.user.role;
-    if (!roles.includes(currentUserRoles)) {
-        return next(new AppError("You do not have permission to access this routes", 403))
+// ✅ Middleware 2: Role-based access
+export const authorisedRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `Access denied for role: ${req.user.role}`,
+      });
     }
     next();
-}
+  };
+};
 
-const authorizeSubscriber = async (req, res, next) => {
-    const {role, id} = req.user; 
-    const user = await userModel.findById(id);
-    const subscriptionStatus = user.subscription.status;
-    if (role !== 'ADMIN' && subscriptionStatus !== 'active') {
-        return next(
-            new AppError('Please subscribce to access this route!', 403)
-        )
-    }
+// ✅ Middleware 3: Subscription check
+export const authorizeSubscriber = (req, res, next) => {
+  if (req.user?.subscription?.status === "active") {
+    return next();
+  }
 
-    next();
-}
-
-export {
-    isLoggedIn,
-    authorisedRoles,
-    authorizeSubscriber
-}
+  res.status(403).json({
+    success: false,
+    message: "Only active subscribers can access this resource.",
+  });
+};

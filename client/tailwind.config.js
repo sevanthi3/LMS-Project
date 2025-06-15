@@ -7,14 +7,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'inter': ['Inter', 'sans-serif'],
-        'lato': ['Lato', 'sans-serif'],
-        'nunito-sans': ['Nunito Sans', 'sans-serif'],
-        'open-sans': ['Open Sans', 'sans-serif'],
-        'roboto': ['Roboto', 'sans-serif'],
-      }
+        saira: ['"Saira Stencil One"', 'sans-serif'],
+      },
     },
   },
-  darkMode: 'class',
-  plugins: [require('daisyui')],
-}
+  plugins: [],
+};

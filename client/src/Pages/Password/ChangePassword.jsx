@@ -1,104 +1,172 @@
-import { useState } from "react";
-import { toast } from "react-hot-toast";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import Layout from "../../Layout/Layout";
-import { changePassword } from "../../Redux/Slices/AuthSlice";
-import InputBox from "../../Components/InputBox/InputBox";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
+import { axiosUserInstance } from "../../Helpers/axiosInstance";
 
-export default function ChangePassword() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [userPassword, setUserPassword] = useState({
-    oldPassword: "",
-    newPassword: "",
-  });
-
-  function handleUserInput(e) {
-    const { name, value } = e.target;
-    setUserPassword({
-      ...userPassword,
-      [name]: value,
-    });
-  }
-
-  async function onChangePassword(event) {
-    event.preventDefault();
-    if (!userPassword.oldPassword || !userPassword.newPassword) {
-      toast.error("Please fill all the details");
-      return;
-    }
-
-    setIsLoading(true);
-    
-    // dispatch create account action
-    const response = await dispatch(changePassword(userPassword));
-    if (response?.payload?.success) {
-      setUserPassword({
-        oldPassword: "",
-        newPassword: "",
-      });
-      navigate("/");
-    }
-    setIsLoading(false);
-  }
-
-  return (
-    <Layout>
-      <section className="flex flex-col gap-6 items-center py-8 px-3 min-h-[100vh]">
-        <form
-          onSubmit={onChangePassword}
-          autoComplete="off"
-          noValidate
-          className="flex flex-col dark:bg-base-100 gap-4 rounded-lg md:py-5 py-7 md:px-7 px-3 md:w-[500px] w-full shadow-custom dark:shadow-xl  "
-        >
-          <h1 className="text-center dark:text-purple-500 text-4xl font-bold font-inter">
-            Change Password Page
-          </h1>
-          
-          {/* old password */}
-          <InputBox
-            label={"Old Password"}
-            name={"oldPassword"}
-            type={"password"}
-            placeholder={"Enter your old password..."}
-            onChange={handleUserInput}
-            value={userPassword.oldPassword}
-          />
-          {/* new password */}
-          <InputBox
-            label={"New Password"}
-            name={"newPassword"}
-            type={"password"}
-            placeholder={"Enter your new password..."}
-            onChange={handleUserInput}
-            value={userPassword.newPassword}
-          />
-
-          {/* submit btn */}
-          <button
-            type="submit"
-            className="mt-2 bg-yellow-500 text-white dark:text-base-200  transition-all ease-in-out duration-300 rounded-md py-2 font-nunito-sans font-[500]  text-lg cursor-pointer"
-            disabled={isLoading}
-          >
-            {isLoading ? "changing..." : "Change"}
-          </button>
-
-          {/* link */}
-          <p className="text-center font-inter text-gray-500 dark:text-slate-300">
-            Not Remember ?{" "}
-            <Link
-              to="/reset"
-              className="link text-blue-600 font-lato cursor-pointer"
-            >
-              {" "}
-              reset password
-            </Link>
-          </p>
-        </form>
-      </section>
-    </Layout>
-  );
+const initialState = {
+    isLoggedIn: localStorage.getItem("isLoggedIn") || false,
+    role: localStorage.getItem("role") || "",
+    data: JSON.parse(localStorage.getItem("data")) || {}
 }
+
+// .....signup.........
+export const createAccount = createAsyncThunk("/auth/signup", async (data) => {
+    const loadingMessage = toast.loading("Please wait! creating your account...");
+    try {
+        const res = await axiosInstance.post("/user/register", data);
+        toast.success(res?.data?.message, { id: loadingMessage });
+        return res?.data
+    } catch (error) {
+        toast.error(error?.response?.data?.message, { id: loadingMessage });
+        throw error;
+    }
+})
+
+// .....Login.........
+export const login = createAsyncThunk("/auth/login", async (data) => {
+    const loadingMessage = toast.loading("Please wait! logging into your account...");
+    try {
+        const res = await axiosInstance.post("/user/login", data);
+        toast.success(res?.data?.message, { id: loadingMessage });
+        return res?.data
+    } catch (error) {
+        toast.error(error?.response?.data?.message, { id: loadingMessage });
+        throw error;
+    }
+})
+
+// .....Logout.........
+export const logout = createAsyncThunk("/auth/logout", async () => {
+    const loadingMessage = toast.loading("logout...");
+    try {
+        const res = await axiosInstance.get("/user/logout");
+        toast.success(res?.data?.message, { id: loadingMessage });
+        return res?.data
+    } catch (error) {
+        toast.error(error?.response?.data?.message, { id: loadingMessage });
+        throw error;
+    }
+})
+
+// .....get user data.........
+export const getUserData = createAsyncThunk("/auth/user/me", async () => {
+    const loadingMessage = toast.loading("fetching profile...");
+    try {
+        const res = await axiosInstance.get("/user/me");
+        toast.success(res?.data?.message, { id: loadingMessage });
+        return res?.data
+    } catch (error) {
+        toast.error(error?.response?.data?.message, { id: loadingMessage });
+        throw error;
+    }
+})
+
+// .....update user data.........
+export const updateUserData = createAsyncThunk("/auth/user/me", async (data) => {
+    const loadingMessage = toast.loading("Updating changes...");
+    try {
+        const res = await axiosInstance.post(`/user/update/${data.id}`, data.formData);
+        toast.success(res?.data?.message, { id: loadingMessage });
+        return res?.data
+    } catch (error) {
+        toast.error(error?.response?.data?.message, { id: loadingMessage });
+        throw error;
+    }
+})
+
+// .....change user password.......
+export const changePassword = createAsyncThunk(
+    "/auth/user/changePassword",
+    async (userPassword) => {
+        const loadingMessage = toast.loading("Changing password...");
+        try {
+            const res = await axiosInstance.post("/user/change-password", userPassword);
+            toast.success(res?.data?.message, { id: loadingMessage });
+            return res?.data
+        } catch (error) {
+            toast.error(error?.response?.data?.message, { id: loadingMessage });
+            throw error;
+        }
+    }
+);
+
+// .....forget user password.....
+export const forgetPassword = createAsyncThunk(
+    "auth/user/forgetPassword",
+    async (email) => {
+        const loadingMessage = toast.loading("Please Wait! sending email...");
+        try {
+            const res = await axiosInstance.post("/user/reset", {email});
+            toast.success(res?.data?.message, { id: loadingMessage });
+            return res?.data
+        } catch (error) {
+            toast.error(error?.response?.data?.message, { id: loadingMessage });
+            throw error;
+        }
+    }
+);
+
+
+// .......reset the user password......
+export const resetPassword = createAsyncThunk("/user/reset", async (data) => {
+    const loadingMessage = toast.loading("Please Wait! reseting your password...");
+    try {
+        const res = await axiosInstance.post(`/user/reset/${data.resetToken}`,
+            { password: data.password }
+        );
+        toast.success(res?.data?.message, { id: loadingMessage });
+        return res?.data
+    } catch (error) {
+        toast.error(error?.response?.data?.message, { id: loadingMessage });
+        throw error;
+    }
+});
+
+const authSlice = createSlice({
+    name: "auth",
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        // for signup
+        builder.addCase(createAccount.fulfilled, (state, action) => {
+            localStorage.setItem("data", JSON.stringify(action?.payload?.user));
+            localStorage.setItem("role", action?.payload?.user?.role);
+            localStorage.setItem("isLoggedIn", true);
+            state.data = action?.payload?.user;
+            state.role = action?.payload?.user?.role;
+            state.isLoggedIn = true;
+        })
+
+        // for login
+        builder.addCase(login.fulfilled, (state, action) => {
+            localStorage.setItem("data", JSON.stringify(action?.payload?.user));
+            localStorage.setItem("role", action?.payload?.user?.role);
+            localStorage.setItem("isLoggedIn", true);
+            state.data = action?.payload?.user;
+            state.role = action?.payload?.user?.role;
+            state.isLoggedIn = true;
+        })
+
+        // for logout
+        builder.addCase(logout.fulfilled, (state, action) => {
+            localStorage.removeItem("data");
+            localStorage.removeItem("role");
+            localStorage.removeItem("isLoggedIn");
+            state.data = {};
+            state.role = "";
+            state.isLoggedIn = false;
+        })
+
+        // for get user data
+        builder.addCase(getUserData.fulfilled, (state, action) => {
+            localStorage.setItem("data", JSON.stringify(action?.payload?.user));
+            localStorage.setItem("role", action?.payload?.user?.role);
+            localStorage.setItem("isLoggedIn", true);
+            state.data = action?.payload?.user;
+            state.role = action?.payload?.user?.role;
+            state.isLoggedIn = true;
+        })
+    }
+})
+
+export const { } = authSlice.actions;
+export default authSlice.reducer;

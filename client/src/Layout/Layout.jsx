@@ -1,24 +1,17 @@
-import React from "react";
-import Footer from "../Components/Footer";
+import { Outlet } from "react-router-dom";
 import Navbar from "../Components/Navbar";
-import Sidebar from "../Components/Sidebar";
+import Footer from "../Components/Footer";
 
-export default function Layout({ children, hideBar, hideNav, hideFooter }) {
+export default function Layout() {
   return (
     <>
-      <main className="min-h-[100vh] bg-white dark:bg-base-200">
-        {/* navbar */}
-        {!hideNav && <Navbar />}
+      <Navbar />
 
-        {/* sidebar */}
-        <Sidebar hideBar={hideBar} />
-
-        {/* main content */}
-        {children}
-
-        {/* footer */}
-        {!hideFooter && <Footer />}
+      <main className="min-h-[80vh] px-4">
+        <Outlet /> {/* 🔥 This is the key */}
       </main>
+
+      <Footer />
     </>
   );
 }

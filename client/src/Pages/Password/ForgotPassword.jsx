@@ -3,7 +3,6 @@ import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from "../../Layout/Layout";
-import { forgetPassword } from "../../Redux/Slices/AuthSlice";
 import InputBox from "../../Components/InputBox/InputBox";
 
 export default function ForgotPassword() {

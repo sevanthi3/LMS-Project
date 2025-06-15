@@ -1,61 +1,60 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import toast from 'react-hot-toast';
-import { axiosInstance } from '../../Helpers/axiosInstance';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
+import { axiosCourseInstance } from "../../Helpers/axiosInstance";
 
 const initialState = {
-    coursesData: []
-}
+  coursesData: [],
+  loading: false,
+  error: null
+};
 
-// ....get all courses....
-export const getAllCourses = createAsyncThunk("/courses/get", async () => {
-    const loadingMessage = toast.loading("fetching courses...");
-    try {
-        const res = await axiosInstance.get("/courses");
-        toast.success(res?.data?.message, { id: loadingMessage });
-        return res?.data
-    } catch (error) {
-        toast.error(error?.response?.data?.message, { id: loadingMessage });
-        throw error;
-    }
-})
+// ✅ Fetch all courses
+export const getAllCourses = createAsyncThunk("/courses/get", async (_, thunkAPI) => {
+  const loadingMessage = toast.loading("Fetching courses...");
+  try {
+    const res = await axiosCourseInstance.get("/");
+    toast.success(res?.data?.message, { id: loadingMessage });
+    return res?.data?.courses;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Failed to fetch courses", {
+      id: loadingMessage,
+    });
+    return thunkAPI.rejectWithValue(error?.response?.data?.message);
+  }
+});
 
-// ....create course....
-export const createNewCourse = createAsyncThunk("/courses/create", async (data) => {
-    const loadingMessage = toast.loading("Creating course...");
-    try {
-        const res = await axiosInstance.post("/courses", data);
-        toast.success(res?.data?.message, { id: loadingMessage });
-        return res?.data
-    } catch (error) {
-        toast.error(error?.response?.data?.message, { id: loadingMessage });
-        throw error;
-    }
-})
-
-// ....delete course......
-export const deleteCourse = createAsyncThunk("/course/delete", async (id) => {
-    const loadingId = toast.loading("deleting course ...")
-    try {
-        const response = await axiosInstance.delete(`/courses/${id}`);
-        toast.success("Courses deleted successfully", { id: loadingId });
-        return response?.data
-    } catch (error) {
-        toast.error("Failed to delete course", { id: loadingId });
-        throw error
-    }
+// ✅ Delete a course
+export const deleteCourse = createAsyncThunk("/courses/delete", async (courseId, thunkAPI) => {
+  const loadingMessage = toast.loading("Deleting course...");
+  try {
+    const res = await axiosCourseInstance.delete(`/delete/${courseId}`);
+    toast.success(res?.data?.message || "Course deleted", { id: loadingMessage });
+    return courseId;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Delete failed", { id: loadingMessage });
+    return thunkAPI.rejectWithValue(error?.response?.data);
+  }
 });
 
 const courseSlice = createSlice({
-    name: 'course',
-    initialState,
-    reducers: {},
-    extraReducers: (builder) => {
-
-        // for get all courses
-        builder.addCase(getAllCourses.fulfilled, (state, action) => {
-            state.coursesData = action?.payload?.courses;
-        })
-    }
-})
+  name: "course",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getAllCourses.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllCourses.fulfilled, (state, action) => {
+        state.loading = false;
+        state.coursesData = action.payload;
+      })
+      .addCase(getAllCourses.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+});
 
 export default courseSlice.reducer;

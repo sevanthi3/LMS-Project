@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import Layout from "../../Layout/Layout";
-import { getAllCourses, deleteCourse } from "../../Redux/Slices/CourseSlice";
+import { deleteCourse } from "../../Redux/Slices/courseSlice";
 import { getPaymentRecord } from "../../Redux/Slices/RazorpaySlice";
 import { getStatsData } from "../../Redux/Slices/StatSlice";
 ChartJS.register(
