@@ -1,1 +1,1 @@
-VITE_REACT_APP_API_URL=<API_BASE_URL>
+VITE_BASE_URL=https://lms-project-1-u4ch.onrender.com
