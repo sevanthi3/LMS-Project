@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 // ✅ CORS Setup
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://lms-frontend-netlify.netlify.app", // ✅ Use your deployed frontend here
+  "https://6858167a33cfb9e3e43342a5--lms-frontend-app.netlify.app/", // ✅ Use your deployed frontend here
 ];
 
 app.use(cors({
