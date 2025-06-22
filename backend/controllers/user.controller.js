@@ -1,13 +1,12 @@
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
-// 🔐 Register a new user
 const register = async (req, res) => {
   try {
     const { fullName, email, password, role } = req.body;
-    const avatar = req.file?.path;
+    const avatar = req.file?.path; // optional
 
-    if (!fullName || !email || !password || !avatar) {
+    if (!fullName || !email || !password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
@@ -36,6 +35,7 @@ const register = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 
 // 🔓 Login user
  const login = async (req, res) => {
