@@ -69,8 +69,6 @@ export const getUserData = createAsyncThunk("/auth/user/me", async () => {
 });
 
 // 🧑‍💼 Update Profile
-// ✅ src/Redux/Slices/AuthSlice.jsx or wherever you have it
-
 export const updateUserData = createAsyncThunk(
   "/auth/user/update",
   async ({ formData }, thunkAPI) => {
@@ -89,11 +87,20 @@ export const updateUserData = createAsyncThunk(
   }
 );
 
-
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    // ✅ Manually set login state (optional use)
+    setUserLoggedIn: (state, action) => {
+      state.isLoggedIn = true;
+      state.role = action.payload.role || "";
+      state.data = action.payload.data || {};
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("role", state.role);
+      localStorage.setItem("data", JSON.stringify(state.data));
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createAccount.fulfilled, (state, action) => {
@@ -137,10 +144,6 @@ const authSlice = createSlice({
         state.role = action.payload.user.role;
         state.isLoggedIn = true;
       })
-      // Handle updateUserData lifecycle
-      .addCase(updateUserData.pending, (state) => {
-        // Optional: set loading state if you want
-      })
       .addCase(updateUserData.fulfilled, (state, action) => {
         localStorage.setItem("data", JSON.stringify(action.payload.user));
         localStorage.setItem("role", action.payload.user.role);
@@ -148,11 +151,10 @@ const authSlice = createSlice({
         state.data = action.payload.user;
         state.role = action.payload.user.role;
         state.isLoggedIn = true;
-      })
-      .addCase(updateUserData.rejected, (state, action) => {
-        // Optional: handle error state if needed
       });
   },
 });
 
+// ✅ Export the manual action if needed
+export const { setUserLoggedIn } = authSlice.actions;
 export default authSlice.reducer;

@@ -62,19 +62,28 @@ export default function Signup() {
     }
 
     setIsLoading(true);
-    const response = await dispatch(createAccount(formData));
-    setIsLoading(false);
+    try {
+      const response = await dispatch(createAccount(formData));
+      const data = response?.payload;
 
-    if (response?.payload?.success) {
-      setSignupData({
-        fullName: "",
-        email: "",
-        password: "",
-        avatar: "",
-      });
-      setPreviewImage("");
-      navigate("/user/profile");
+      if (data?.success) {
+        setSignupData({
+          fullName: "",
+          email: "",
+          password: "",
+          avatar: "",
+        });
+        setPreviewImage("");
+        toast.success("Registration successful!");
+        navigate("/user/profile");
+      } else {
+        toast.error(data?.message || "Registration failed. Please try again.");
+      }
+    } catch (err) {
+      toast.error(err?.message || "Something went wrong during registration.");
     }
+
+    setIsLoading(false);
   }
 
   return (

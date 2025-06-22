@@ -1,93 +1,44 @@
 import AppError from "../utils/error.utils.js";
 
-// Get all courses (with dummy data)
 const getAllCourses = async (req, res, next) => {
   try {
     const dummyCourses = [
       {
         _id: "1",
-        title: "Full Stack Development",
-        description: "Learn MERN stack from scratch with real-time projects.",
-        category: "Web Development",
-        createdBy: "John Doe",
-        fees: "₹9999",
-        trainingHours: "120 hours",
-        trainer: "Rajesh Kumar",
-        thumbnail: {
-          secure_url: "https://via.placeholder.com/300x200?text=FSD"
-        },
-        lectures: [],
+        name: "Dr. Arjun Kumar",
+        subject: "Full Stack Development (MERN)",
+        price: "₹700/hr",
       },
       {
         _id: "2",
-        title: "Data Science Mastery",
-        description: "Data Analysis, Python, ML models, and deployment.",
-        category: "Data Science",
-        createdBy: "Jane Smith",
-        fees: "₹11999",
-        trainingHours: "100 hours",
-        trainer: "Neha Gupta",
-        thumbnail: {
-          secure_url: "https://via.placeholder.com/300x200?text=DS"
-        },
-        lectures: [],
+        name: "Ms. Divya Ramesh",
+        subject: "Frontend (HTML, CSS, React)",
+        price: "₹600/hr",
       },
       {
         _id: "3",
-        title: "Python for Automation",
-        description: "Automate boring tasks using Python scripts and libraries.",
-        category: "Scripting",
-        createdBy: "David Tech",
-        fees: "₹4999",
-        trainingHours: "60 hours",
-        trainer: "Amit Verma",
-        thumbnail: {
-          secure_url: "https://via.placeholder.com/300x200?text=Python"
-        },
-        lectures: [],
+        name: "Mr. Rakesh Menon",
+        subject: "Backend (Node.js, MongoDB)",
+        price: "₹650/hr",
       },
       {
         _id: "4",
-        title: "AWS DevOps Bootcamp",
-        description: "Master DevOps practices with AWS tools like EC2, S3, CodePipeline.",
-        category: "Cloud & DevOps",
-        createdBy: "Cloud Guru",
-        fees: "₹10999",
-        trainingHours: "90 hours",
-        trainer: "Sanjay Mehta",
-        thumbnail: {
-          secure_url: "https://via.placeholder.com/300x200?text=AWS"
-        },
-        lectures: [],
+        name: "Ms. Anjali Sinha",
+        subject: "UI/UX & Tailwind CSS",
+        price: "₹550/hr",
       },
       {
         _id: "5",
-        title: "UI/UX Design Basics",
-        description: "Understand design principles, Figma, and user experience strategy.",
-        category: "Design",
-        createdBy: "Creative Lead",
-        fees: "₹6999",
-        trainingHours: "50 hours",
-        trainer: "Priya Nair",
-        thumbnail: {
-          secure_url: "https://via.placeholder.com/300x200?text=UIUX"
-        },
-        lectures: [],
+        name: "Mr. Rahul Verma",
+        subject: "DSA + System Design",
+        price: "₹500/hr",
       },
       {
         _id: "6",
-        title: "Cyber Security Essentials",
-        description: "Intro to ethical hacking, network security, and tools.",
-        category: "Security",
-        createdBy: "Cyber Ninja",
-        fees: "₹8999",
-        trainingHours: "75 hours",
-        trainer: "Rohit Sharma",
-        thumbnail: {
-          secure_url: "https://via.placeholder.com/300x200?text=Security"
-        },
-        lectures: [],
-      }
+        name: "Ms. Priya Mohan",
+        subject: "DevOps + Cloud (AWS)",
+        price: "₹700/hr",
+      },
     ];
 
     return res.status(200).json({

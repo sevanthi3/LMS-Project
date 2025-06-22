@@ -29,13 +29,23 @@ export default function CourseDetails() {
 
         {/* Course Info */}
         <div className="flex-1">
-          <h2 className="text-3xl font-bold text-indigo-700 dark:text-white mb-2">{course.title}</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">{course.description}</p>
+          <h2 className="text-3xl font-bold text-indigo-700 dark:text-white mb-2">
+            {course.title}
+          </h2>
+          <p className="text-gray-700 dark:text-gray-300 mb-4">
+            {course.description}
+          </p>
 
           <div className="text-gray-600 dark:text-gray-300 mb-6 space-y-2">
-            <p><strong>Trainer:</strong> {course.trainer || "N/A"}</p>
-            <p><strong>Fees:</strong> ₹{course.fees || "0"}</p>
-            <p><strong>Duration:</strong> {course.duration || "N/A"}</p>
+            <p>
+              <strong>Trainer:</strong> {course.trainer || "N/A"}
+            </p>
+            <p>
+              <strong>Fees:</strong> ₹{course.fees || "0"}
+            </p>
+            <p>
+              <strong>Duration:</strong> {course.duration || "N/A"}
+            </p>
           </div>
 
           <button
@@ -53,9 +63,16 @@ export default function CourseDetails() {
         {course.lectures && course.lectures.length > 0 ? (
           <ul className="space-y-4">
             {course.lectures.map((lecture) => (
-              <li key={lecture._id} className="border p-4 rounded shadow-sm bg-gray-50 dark:bg-gray-800">
-                <p className="font-medium text-lg dark:text-white">{lecture.title}</p>
-                <p className="text-gray-700 dark:text-gray-300 mb-2">{lecture.description}</p>
+              <li
+                key={lecture._id}
+                className="border p-4 rounded shadow-sm bg-gray-50 dark:bg-gray-800"
+              >
+                <p className="font-medium text-lg dark:text-white">
+                  {lecture.title}
+                </p>
+                <p className="text-gray-700 dark:text-gray-300 mb-2">
+                  {lecture.description}
+                </p>
                 <a
                   href={lecture.lecture.secure_url}
                   download

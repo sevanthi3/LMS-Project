@@ -95,7 +95,6 @@ export default function Profile() {
           <h1 className="text-center absolute left-6 md:top-auto top-5 text-violet-500 dark:text-purple-500 md:text-4xl text-3xl font-bold font-inter after:content-[' ']  after:absolute after:-bottom-3.5 after:left-0 after:h-1.5 after:w-[60%] after:rounded-full after:bg-yellow-400 dark:after:bg-yellow-600">
             Profile
           </h1>
-          {/* avatar */}
           <div
             className="w-16 h-16 rounded-full overflow-hidden self-center cursor-pointer"
             onClick={() => avatarInputRef.current.click()}
@@ -121,7 +120,8 @@ export default function Profile() {
               onChange={handleImageUpload}
             />
           </div>
-          {/* more options */}
+
+          {/* More Options */}
           <div className="absolute right-3 top-3">
             <button
               type="button"
@@ -130,7 +130,6 @@ export default function Profile() {
             >
               <FiMoreVertical size={20} />
             </button>
-
             <dialog
               open={isDialogOpen}
               className="bg-white dark:bg-base-300 transition-all duration-500 border-[1px] border-gray-200 dark:border-gray-500 rounded-s-xl rounded-ee-xl py-5 shadow-lg w-fit relative right-0 top-7"
@@ -154,7 +153,6 @@ export default function Profile() {
         </div>
 
         <div className="w-full flex flex-wrap gap-6">
-          {/* name */}
           <InputBox
             label={"Name"}
             name={"name"}
@@ -166,8 +164,6 @@ export default function Profile() {
             }
             className="md:w-[48%] w-[100%]"
           />
-
-          {/* email */}
           <InputBox
             label={"Email"}
             name={"email"}
@@ -176,7 +172,6 @@ export default function Profile() {
             className="md:w-[48%] w-[100%]"
             disabled={true}
           />
-          {/* role */}
           <InputBox
             label={"Role"}
             name={"role"}
@@ -185,7 +180,6 @@ export default function Profile() {
             className="md:w-[48%] w-[100%]"
             disabled={true}
           />
-          {/* subscription */}
           <InputBox
             label={"Subscription"}
             name={"subscription"}
@@ -195,26 +189,35 @@ export default function Profile() {
             disabled={true}
           />
         </div>
-        {/* submit button */}
-        <div className="w-full flex md:flex-row flex-col md:justify-between justify-center md:gap-0 gap-3">
+
+        {/* Action Buttons */}
+        <div className="w-full flex flex-col gap-3 mt-4">
           <button
             type="submit"
-            className="py-3.5 rounded-md bg-yellow-500 mt-3 text-white font-inter md:w-[48%] w-full"
+            className="py-3.5 rounded-md bg-yellow-500 text-white font-inter w-full"
             disabled={!isChanged || isUpdating}
           >
             {isUpdating ? "Saving Changes..." : "Save Changes"}
           </button>
 
-          {/* show cancel subscription btn if Active */}
           {userData?.subscription?.status === "active" && (
             <button
               type="button"
               onClick={handleCancelSubscription}
-              className="py-3.5 rounded-md bg-[#f32e2e] mt-3 text-white font-inter md:w-[48%] w-full"
+              className="py-3.5 rounded-md bg-[#f32e2e] text-white font-inter w-full"
             >
               Cancel Subscription
             </button>
           )}
+
+          {/* ✅ Feedback Button */}
+          <button
+            type="button"
+            onClick={() => navigate(`/feedback/${userData?._id}`)}
+            className="py-3.5 rounded-md bg-blue-600 text-white font-inter w-full"
+          >
+            Give Feedback
+          </button>
         </div>
       </form>
     </section>
