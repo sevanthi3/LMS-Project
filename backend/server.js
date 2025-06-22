@@ -17,13 +17,15 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   "http://localhost:5173",
   "https://lms-frontend-app.netlify.app",
-  "https://68581d2370bccb871ea00294--lms-frontend-app.netlify.app",
 ];
-
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.some(o => origin.startsWith(o.replace("*", "")))) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      /\.netlify\.app$/.test(origin) // ✅ allow all *.netlify.app subdomains
+    ) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS: " + origin));
