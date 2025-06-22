@@ -16,10 +16,10 @@ const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://lms-frontend-app.netlify.app", // ✅ Main production domain
-  "https://*.netlify.app",   
-  "https://68581d2370bccb871ea00294--lms-frontend-app.netlify.app/"         
+  "https://lms-frontend-app.netlify.app",
+  "https://68581d2370bccb871ea00294--lms-frontend-app.netlify.app",
 ];
+
 
 app.use(cors({
   origin: function (origin, callback) {
