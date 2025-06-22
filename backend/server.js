@@ -14,24 +14,26 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ CORS Setup
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://6858167a33cfb9e3e43342a5--lms-frontend-app.netlify.app/", // ✅ Use your deployed frontend here
+  "https://lms-frontend-app.netlify.app", // ✅ Main production domain
+  "https://*.netlify.app",   
+  "https://68581d2370bccb871ea00294--lms-frontend-app.netlify.app/"         
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.some(o => origin.startsWith(o.replace("*", "")))) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error("Not allowed by CORS: " + origin));
     }
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
 
 app.options("*", cors()); // ✅ Handle preflight requests
 
