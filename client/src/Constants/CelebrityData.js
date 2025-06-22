@@ -1,4 +1,4 @@
-import apj from "../asset/images/apj.png";
+import apj from "../asset/images/APJ.png";
 import billGates from "../asset/images/BillGates.png";
 import einstein from "../asset/images/Einstein.png";
 import nelsonMandela from "../asset/images/NelsonMandela.png";
