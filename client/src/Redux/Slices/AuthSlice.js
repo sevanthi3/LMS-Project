@@ -14,7 +14,7 @@ export const createAccount = createAsyncThunk("/auth/signup", async (data) => {
   try {
     const res = await axiosUserInstance.post("/register", data, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
       withCredentials: true,
     });
@@ -60,7 +60,7 @@ export const getUserData = createAsyncThunk("/auth/user/me", async () => {
     const res = await axiosUserInstance.get("/me", {
       withCredentials: true,
     });
-    toast.success(res?.data?.message, { id: loadingMessage });
+    toast.success(res?.data?.message || "Profile loaded", { id: loadingMessage });
     return res?.data;
   } catch (error) {
     toast.error(error?.response?.data?.message || "Could not fetch profile", { id: loadingMessage });
@@ -68,7 +68,7 @@ export const getUserData = createAsyncThunk("/auth/user/me", async () => {
   }
 });
 
-// 🧑‍💼 Update Profile
+// 🧑‍💼 Update Profile (still supports avatar if needed)
 export const updateUserData = createAsyncThunk(
   "/auth/user/update",
   async ({ formData }, thunkAPI) => {
@@ -91,7 +91,6 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // ✅ Manually set login state (optional use)
     setUserLoggedIn: (state, action) => {
       state.isLoggedIn = true;
       state.role = action.payload.role || "";
@@ -155,6 +154,5 @@ const authSlice = createSlice({
   },
 });
 
-// ✅ Export the manual action if needed
 export const { setUserLoggedIn } = authSlice.actions;
 export default authSlice.reducer;

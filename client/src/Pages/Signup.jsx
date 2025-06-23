@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { BsPersonCircle } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { createAccount } from "../Redux/Slices/AuthSlice";
@@ -10,29 +9,16 @@ export default function Signup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [previewImage, setPreviewImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [signupData, setSignupData] = useState({
     fullName: "",
     email: "",
     password: "",
-    avatar: "",
   });
 
   function handleUserInput(e) {
     const { name, value } = e.target;
     setSignupData({ ...signupData, [name]: value });
-  }
-
-  function getImage(e) {
-    const uploadedImage = e.target.files[0];
-    if (uploadedImage) {
-      setSignupData({ ...signupData, avatar: uploadedImage });
-
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(uploadedImage);
-      fileReader.onload = () => setPreviewImage(fileReader.result);
-    }
   }
 
   async function createNewAccount(e) {
@@ -53,17 +39,17 @@ export default function Signup() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("fullName", signupData.fullName);
-    formData.append("email", signupData.email);
-    formData.append("password", signupData.password);
-    if (signupData.avatar) {
-      formData.append("avatar", signupData.avatar);
-    }
+    // ✅ Include role here
+    const jsonPayload = {
+      fullName: signupData.fullName,
+      email: signupData.email,
+      password: signupData.password,
+      role: "student", // Default role
+    };
 
     setIsLoading(true);
     try {
-      const response = await dispatch(createAccount(formData));
+      const response = await dispatch(createAccount(jsonPayload));
       const data = response?.payload;
 
       if (data?.success) {
@@ -71,9 +57,7 @@ export default function Signup() {
           fullName: "",
           email: "",
           password: "",
-          avatar: "",
         });
-        setPreviewImage("");
         toast.success("Registration successful!");
         navigate("/user/profile");
       } else {
@@ -124,34 +108,6 @@ export default function Signup() {
           onChange={handleUserInput}
           value={signupData.password}
         />
-
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="avatar"
-            className="font-[500] text-xl text-blue-600 dark:text-white font-lato"
-          >
-            Avatar{" "}
-            <span className="text-red-600 font-inter text-lg">(Optional)</span>
-          </label>
-          <div className="flex gap-7 border border-gray-300 px-2 py-2">
-            {previewImage ? (
-              <img
-                className="w-10 h-10 rounded-full"
-                src={previewImage}
-                alt="avatar preview"
-              />
-            ) : (
-              <BsPersonCircle className="w-10 h-10 rounded-full" />
-            )}
-            <input
-              onChange={getImage}
-              type="file"
-              name="avatar"
-              id="avatar"
-              accept=".jpg, .jpeg, .png, image/*"
-            />
-          </div>
-        </div>
 
         <button
           type="submit"

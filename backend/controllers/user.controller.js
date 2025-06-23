@@ -1,44 +1,41 @@
 import { User } from "../models/user.model.js";
-import jwt from "jsonwebtoken";
 
 const register = async (req, res) => {
   try {
-    const { fullName, email, password, role } = req.body;
-    const avatar = req.file?.path; // optional
+    console.log("📥 Incoming registration data:", req.body);
+
+    const { fullName, email, password } = req.body;
+    const role = req.body.role || "student"; // Optional fallback
 
     if (!fullName || !email || !password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    const userExists = await User.findOne({ email });
-    if (userExists) {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({ success: false, message: "User already exists" });
     }
 
-    const user = await User.create({
-      fullName,
-      email,
-      password,
-      avatar,
-      role,
-    });
+    const user = await User.create({ fullName, email, password, role });
+    const token = user.generateToken(); // ✅ No more error
 
-    const token = user.generateToken();
-    res.status(201)
+    res
+      .status(201)
       .cookie("token", token, {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: "Lax",
       })
       .json({ success: true, message: "User registered", user });
-  } catch (error) {
-    console.error("Register error:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+  } catch (err) {
+    console.error("Register error:", err);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
 
 // 🔓 Login user
- const login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -64,7 +61,6 @@ const register = async (req, res) => {
   }
 };
 
-// 🚪 Logout user
 const logout = (req, res) => {
   res.clearCookie("token").status(200).json({
     success: true,
@@ -72,7 +68,6 @@ const logout = (req, res) => {
   });
 };
 
-// 👤 Get user profile
 const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
@@ -82,7 +77,6 @@ const getProfile = async (req, res) => {
   }
 };
 
-// 🔑 Forgot password
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -96,7 +90,6 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-// 🔄 Reset password
 const resetPassword = async (req, res) => {
   try {
     const { newPassword } = req.body;
@@ -113,8 +106,7 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// 🧑‍🔧 Change password
- const changePassword = async (req, res) => {
+const changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
 
@@ -133,8 +125,7 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// 📝 Update profile
- const updateUser = async (req, res) => {
+const updateUser = async (req, res) => {
   try {
     const { fullName } = req.body;
     const avatar = req.file?.path;
@@ -153,7 +144,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// ✅ 👨‍🎓 Get all student users
 const fetchAllStudentUsers = async (req, res) => {
   try {
     const students = await User.find({ role: "student" }).select("-password");
@@ -164,7 +154,6 @@ const fetchAllStudentUsers = async (req, res) => {
   }
 };
 
-// ✅ Export all controllers
 export {
   register,
   login,
@@ -174,5 +163,5 @@ export {
   resetPassword,
   changePassword,
   updateUser,
-  fetchAllStudentUsers, // ✅ this is now definitely exported
+  fetchAllStudentUsers,
 };

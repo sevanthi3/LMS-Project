@@ -3,14 +3,10 @@ import * as userController from "../controllers/user.controller.js";
 import { isLoggedIn, authorisedRoles } from "../middleware/auth.middleware.js";
 import upload from "../middleware/multer.middleware.js";
 
-console.log("🛠 isLoggedIn:", typeof isLoggedIn);
-console.log("🛠 authorisedRoles:", typeof authorisedRoles);
-console.log("🛠 fetchAllStudentUsers:", typeof userController.fetchAllStudentUsers);
-
 const router = express.Router();
 
 // ✅ Auth Routes
-router.post("/register", upload.single("avatar"), userController.register);
+router.post("/register", userController.register); // 🔧 avatar middleware removed
 router.post("/login", userController.login);
 router.get("/logout", isLoggedIn, userController.logout);
 
@@ -31,5 +27,4 @@ router.get(
   userController.fetchAllStudentUsers
 );
 
-// ✅ Export the router
 export default router;
