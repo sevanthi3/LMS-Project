@@ -26,7 +26,7 @@ export default function CourseCard({ data }) {
 
         <div className="flex items-center space-x-2">
           <FaBook className="text-yellow-500 dark:text-yellow-400" />
-          <p className="text-base font-semibold">Total lectures: {data?.numberoflectures || 0}</p>
+          <p className="text-base font-semibold">Total lectures: {data?.numberOfLectures || 0}</p>
         </div>
 
         <div className="flex items-center space-x-2">

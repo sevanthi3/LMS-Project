@@ -5,39 +5,63 @@ const getAllCourses = async (req, res, next) => {
     const dummyCourses = [
       {
         _id: "1",
-        name: "Dr. Arjun Kumar",
-        subject: "Full Stack Development (MERN)",
-        price: "₹700/hr",
+        title: "Full Stack Development (MERN)",
+        description: "Learn full stack MERN development from scratch.",
+        category: "Full Stack",
+        numberOfLectures: 12,
+        trainer: "Dr. Arjun Kumar",
+        trainingHours: "40 hrs",
+        fees: 700,
       },
       {
         _id: "2",
-        name: "Ms. Divya Ramesh",
-        subject: "Frontend (HTML, CSS, React)",
-        price: "₹600/hr",
+        title: "Frontend (HTML, CSS, React)",
+        description: "Master frontend development with hands-on projects.",
+        category: "Frontend",
+        numberOfLectures: 10,
+        trainer: "Ms. Divya Ramesh",
+        trainingHours: "30 hrs",
+        fees: 600,
       },
       {
         _id: "3",
-        name: "Mr. Rakesh Menon",
-        subject: "Backend (Node.js, MongoDB)",
-        price: "₹650/hr",
+        title: "Backend (Node.js, MongoDB)",
+        description: "Deep dive into backend APIs with Node.js and MongoDB.",
+        category: "Backend",
+        numberOfLectures: 14,
+        trainer: "Mr. Rakesh Menon",
+        trainingHours: "35 hrs",
+        fees: 650,
       },
       {
         _id: "4",
-        name: "Ms. Anjali Sinha",
-        subject: "UI/UX & Tailwind CSS",
-        price: "₹550/hr",
+        title: "UI/UX & Tailwind CSS",
+        description: "Design stunning UIs with Tailwind and UX best practices.",
+        category: "UI/UX",
+        numberOfLectures: 8,
+        trainer: "Ms. Anjali Sinha",
+        trainingHours: "25 hrs",
+        fees: 550,
       },
       {
         _id: "5",
-        name: "Mr. Rahul Verma",
-        subject: "DSA + System Design",
-        price: "₹500/hr",
+        title: "DSA + System Design",
+        description: "Crack tech interviews with DSA and system design.",
+        category: "DSA",
+        numberOfLectures: 16,
+        trainer: "Mr. Rahul Verma",
+        trainingHours: "45 hrs",
+        fees: 500,
       },
       {
         _id: "6",
-        name: "Ms. Priya Mohan",
-        subject: "DevOps + Cloud (AWS)",
-        price: "₹700/hr",
+        title: "DevOps + Cloud (AWS)",
+        description: "Build scalable cloud pipelines using AWS and DevOps tools.",
+        category: "Cloud",
+        numberOfLectures: 20,
+        trainer: "Ms. Priya Mohan",
+        trainingHours: "50 hrs",
+        fees: 700,
       },
     ];
 
@@ -50,6 +74,7 @@ const getAllCourses = async (req, res, next) => {
     return next(new AppError(e.message, 500));
   }
 };
+
 
 const getLecturesByCourseId = async (req, res, next) => {
   try {
@@ -64,7 +89,6 @@ const getLecturesByCourseId = async (req, res, next) => {
   }
 };
 
-// ✅ Create Course
 const createCourse = async (req, res, next) => {
   try {
     return res.status(201).json({
@@ -76,7 +100,6 @@ const createCourse = async (req, res, next) => {
   }
 };
 
-// ✅ Update Course
 const updateCourse = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -89,7 +112,6 @@ const updateCourse = async (req, res, next) => {
   }
 };
 
-// ✅ Remove Course
 const removeCourse = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -102,7 +124,6 @@ const removeCourse = async (req, res, next) => {
   }
 };
 
-// ✅ Add Lecture to Course
 const addLectureToCourseById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -115,7 +136,6 @@ const addLectureToCourseById = async (req, res, next) => {
   }
 };
 
-// ✅ Delete Lecture
 const deleteCourseLecture = async (req, res, next) => {
   try {
     return res.status(200).json({
@@ -127,7 +147,6 @@ const deleteCourseLecture = async (req, res, next) => {
   }
 };
 
-// ✅ Update Lecture
 const updateCourseLecture = async (req, res, next) => {
   try {
     return res.status(200).json({
@@ -139,7 +158,6 @@ const updateCourseLecture = async (req, res, next) => {
   }
 };
 
-// ✅ Download Lecture
 const downloadLecture = async (req, res, next) => {
   try {
     const { courseId, lectureId } = req.params;
@@ -152,15 +170,13 @@ const downloadLecture = async (req, res, next) => {
   }
 };
 
-
-// Then export everything including this
 export {
   getAllCourses,
   getLecturesByCourseId,
   createCourse,
   updateCourse,
   removeCourse,
-  addLectureToCourseById, // Now it's valid
+  addLectureToCourseById,
   deleteCourseLecture,
   updateCourseLecture,
   downloadLecture,
